@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+google-analytics-data
+pydantic
+python-multipart
