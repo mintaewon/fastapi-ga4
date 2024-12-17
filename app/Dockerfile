@@ -9,4 +9,4 @@ RUN pip install --no-cache-dir -r ./app/requirements.txt
 
 ENV GOOGLE_APPLICATION_CREDENTIALS=./app/secret/he-dashboard-580f85880e99.json
 
-CMD ["uvicorn", "app.wsgi:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.wsgi:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
