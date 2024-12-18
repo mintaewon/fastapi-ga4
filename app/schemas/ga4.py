@@ -13,3 +13,12 @@ class GA4RequestSchema(BaseModel):
 class GA4ResponseSchema(BaseModel):
     status: str
     data: List[dict]
+
+class GA4RealtimeRequestSchema(BaseModel):
+    property_id: str
+    metrics_list: List[str]
+    dimensions_list: List[str]
+
+class GA4RealtimeResponseSchema(BaseModel):
+    status: str
+    data: List[dict]

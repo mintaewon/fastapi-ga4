@@ -9,6 +9,7 @@ from google.analytics.data_v1beta.types import (
     Metric,
     NumericValue,
     RunReportRequest,
+    RunRealtimeReportRequest,
 )
 
 class BaseInfo:
@@ -43,11 +44,26 @@ class GA4Report(BaseInfo):
             property=f"properties/{property_id}",
             dimensions=[Dimension(name=dl) for dl in dimensions_list],
             metrics=[Metric(name=ml) for ml in metrics_list],
-            date_ranges=[DateRange(start_date=start_date, end_date=end_date)]   ,
+            date_ranges=[DateRange(start_date=start_date, end_date=end_date)],
             limit = limit,
             offset = offset,
         )
         response = client.run_report(request=request, retry=self.retry)
+        result = [
+            {dimension.name: row.dimension_values[i].value for i, dimension in enumerate(response.dimension_headers)}
+            | {metric.name: row.metric_values[i].value for i, metric in enumerate(response.metric_headers)}
+            for row in response.rows
+        ]
+        return result
+    
+    async def fetch_ga4_realtime_data(self, property_id: str, metrics_list: list, dimensions_list: list, limit=100000, offset=0):
+        client = self._get_client()
+        request = RunRealtimeReportRequest(
+            property=f"properties/{property_id}",
+            metrics=[Metric(name=ml) for ml in metrics_list],
+            dimensions=[Dimension(name=dl) for dl in dimensions_list],
+        )
+        response = client.run_realtime_report(request=request, retry=self.retry)
         result = [
             {dimension.name: row.dimension_values[i].value for i, dimension in enumerate(response.dimension_headers)}
             | {metric.name: row.metric_values[i].value for i, metric in enumerate(response.metric_headers)}
